@@ -28,7 +28,7 @@ class DialEmbeddingsClient:
         self._api_key = api_key
 
     def get_embeddings(
-            self, input: list[str],
+            self, inputs: list[str],
             **kwargs
     ) -> dict:
 
@@ -37,7 +37,7 @@ class DialEmbeddingsClient:
             "Content-Type": "application/json"
         }
         request_data = {
-            "input": input,
+            "input": inputs,
             **kwargs,
         }
 
