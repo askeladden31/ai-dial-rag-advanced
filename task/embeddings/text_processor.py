@@ -1,4 +1,5 @@
 from enum import StrEnum
+from pathlib import Path
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -50,10 +51,11 @@ class TextProcessor:
         if truncate_table:
             cursor.execute("TRUNCATE TABLE vectors")
 
-        with open(file_name, 'r', encoding='uff-8') as file:
+        file_path = Path(__file__).parent.parent / file_name
+        with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
             chunks = chunk_text(content, chunk_size, overlap)
-            embeddings = self.embeddings_client.get_embeddings(chunks)
+            embeddings = self.embeddings_client.get_embeddings(chunks, dimensions=1536)
             for i in range(len(chunks)):
                 vector_string = str(embeddings.get(i))
                 cursor.execute("INSERT INTO vectors (document_name, text, embedding) VALUES (%s, %s, %s::vector)",
@@ -89,7 +91,7 @@ class TextProcessor:
             raise ValueError("score_threshold must be in [0.0..., 0.99...] range")
 
         embedding = self.embeddings_client.get_embeddings([user_request], dimensions=dimensions)
-        vector_string = str(embedding)
+        vector_string = str(embedding[0])
 
         if search_mode == SearchMode.COSINE_DISTANCE:
             max_distance = 1.0 - score_threshold

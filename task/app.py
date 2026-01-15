@@ -1,3 +1,4 @@
+from pathlib import Path
 from task._constants import API_KEY
 from task.chat.chat_completion_client import DialChatCompletionClient
 from task.embeddings.embeddings_client import DialEmbeddingsClient
@@ -62,7 +63,7 @@ def main():
         #  - file_name: 'embeddings/microwave_manual.txt'
         #  - chunk_size: 150 (or you can experiment, usually we set it as 300)
         #  - overlap: 40 (chars overlap from previous chunk)
-        text_processor.process_text_file('embeddings/microwave_manual.txt', 150, 40)
+        text_processor.process_text_file('embeddings/microwave_manual.txt',150, 40, 384, True)
 
         print("="*100)
 
@@ -88,7 +89,7 @@ def main():
         #  - score_threshold: 0.5 (experiment with different numbers, 0.1 -> 0.99)
         #  - dimensions=384
         search_mode = SearchMode.COSINE_DISTANCE
-        context = text_processor.search(search_mode, user_request, 5, 0.5, 384)
+        context = text_processor.search(search_mode, user_request, 5, 0.5, 1536)
 
 
         # Step 2: Augmentation
@@ -118,7 +119,8 @@ def main():
         print(f"✅ RESPONSE:\n{ai_message.content}")
         print("=" * 100)
 
-
+if __name__ == "__main__":
+    main()
 
 # TODO:
 #  PAY ATTENTION THAT YOU NEED TO RUN Postgres DB ON THE 5433 WITH PGVECTOR EXTENSION!
