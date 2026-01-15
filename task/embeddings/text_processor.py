@@ -88,7 +88,7 @@ class TextProcessor:
         if score_threshold < 0 or score_threshold > 1:
             raise ValueError("score_threshold must be in [0.0..., 0.99...] range")
 
-        embedding = self.embeddings_client.get_embeddings([user_request])
+        embedding = self.embeddings_client.get_embeddings([user_request], dimensions=dimensions)
         vector_string = str(embedding)
 
         if search_mode == SearchMode.COSINE_DISTANCE:
